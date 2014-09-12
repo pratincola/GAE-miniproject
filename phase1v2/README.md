@@ -1,0 +1,26 @@
+Quick description of the project structure (what lies where ?)
+
+- app.yaml - App Engine configuration file
+- config.py - Third party API secrets.
+- main.py - Main routing file.
+- controllers - request handler.
+    -- base.py - base implementation class which implements some of the most common functionality required by all the other handlers
+    -- *.py
+- models - data model goes here.
+- static - static content
+    -- libs
+	-- bootstrap
+	-- jquery
+	-- backbone
+	-- jqueryui
+    -- app
+	-- css
+	-- js
+	-- images
+- templates - Top level directory containing all of your HTML templates. This project uses Mako templating framework.
+    -- base.html an HTML file which defines the HTML skeleton which needs to be inherited by all other HTML files
+    -- *.html
+- tools - This directory should be used to store all of your scripts related to the project. A few examples
+	-- scripts to download/upload application data from production
+	-- etc.
+- libs - This directory should contain all the external python packages you want to bundle in your app. For ex. in this sample, I have bundled mako templating framework
