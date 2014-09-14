@@ -13,12 +13,15 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
+
 class BaseHandler(webapp2.RedirectHandler):
+
 
     def __init__(self, request, response):
         self.initialize(request, response)
 
-    def render_response(self):
+    def render_response(self, template_values, template='base.html'):
+
         user = users.get_current_user()
         if user:
             url = users.create_logout_url(self.request.uri)
@@ -33,15 +36,14 @@ class BaseHandler(webapp2.RedirectHandler):
             url_linktext = 'Login'
             log.info("not logged in ")
 
-        template_values = {
-            'title' : 'Connex.us',
-            'year'  : '2014',
-            'url' : url,
-            'url_linktext': url_linktext
+        template_values['title'] = 'Connex.us'
+        template_values['year'] = '2014'
+        template_values['url'] = url
+        template_values['url_linktext'] =  url_linktext
 
-        }
-        template = JINJA_ENVIRONMENT.get_template('base.html')
-        self.response.write(template.render(template_values))
+        log.info(template_values)
+        use_template = JINJA_ENVIRONMENT.get_template(template)
+        self.response.write(use_template.render(template_values))
 
     def render_json(self, obj):
         jsonify = json.dump(obj)

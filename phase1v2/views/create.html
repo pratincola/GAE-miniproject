@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+    <form action="/CreateStreamPage" method="post">
+        <label for="stream">Name Your Stream:</label>
+        <input type="text" size="35" name="streamName">
+        <br>
+
+        <label for="subscribers">Add Subscribers:</label>
+        <textarea type="text" rows="5" cols="26" name="subscribersList"></textarea>
+        <br>
+
+        <label for="message">Message:</label>
+        <textarea type="text" rows="5" cols="26" name="optionalMessage">Optional Message for invite</textarea>
+        <br>
+
+        <label for="tagStream">Tag Your Stream:</label>
+        <textarea type="text" rows="5" cols="26" name="streamTags"></textarea>
+        <br>
+
+        <label for="coverImage">URL to Cover Image:</label>
+        <input type="text" size="35" name="coverURL">
+        <br>
+        <label></label>
+        <input type="submit" value="Create Steam">
+    </form>
+
+{% endblock body %}
