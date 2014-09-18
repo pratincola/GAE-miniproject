@@ -19,7 +19,7 @@ route_list = [
 	(r'^/', DefaultHandler),
     (r'^/ManagementPage', ManagementHandler),
     (r'^/CreateStreamPage', CreateStreamHandler),
-    (r'^/ViewStream/(\w+)', ViewSingleStreamHandler),
+    (r'^/ViewStream', ViewSingleStreamHandler),
     (r'^/ViewStreams', ViewAllStreamsHandler),
     (r'^/SearchStreams', SearchStreamsHandler),
     (r'^/TrendingStreams', TrendingStreamsHandler),

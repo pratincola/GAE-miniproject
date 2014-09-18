@@ -3,50 +3,57 @@
    {% block body %}
 
     <h1> My Streams:</h1>
-        <form action="/ManagementPage" method="post" id="myStream">
-            <table id="myStreamTable">
-                <tr>
-                    <th>Name</th>
-                    <th>Last New Picture</th>
-                    <th>Number of Pictures</th>
-                    <th>Delete</th>
-                </tr>
-                {% if streams %}
-                    {% for stream in streams %}
-                        <tr>
-                            <td><a href="/ViewStream/?stream={{stream['stream_name']}}">{{stream['stream_name']}}</a></td>
-                            <td>{{stream['date']}}</td>
-                            <td>{{stream['img_count']}}</td>
-                            <td><input type="checkbox" name="delete" value={{stream.name}}></td>
-                        </tr>
-                    {% endfor %}
-                    <input type="submit" value="Delete Checked">
-                {% endif %}
-            </table>
-        </form>
+        {% if streams %}
+            <form action="/ManagementPage" method="post" id="myStream">
+                <table id="myStreamTable">
+                    <tr>
+                        <th>Name</th>
+                        <th>Last New Picture</th>
+                        <th>Number of Pictures</th>
+                        <th>Delete</th>
+                    </tr>
+                {% for stream in streams %}
+                    <tr>
+                        <td><a href="/ViewStream?stream={{stream['key']}}">{{stream['stream_name']}}</a></td>
+                        <td>{{stream['stream_modified_day']}}</td>
+                        <td>{{stream['img_count']}}</td>
+                        <td><input type="checkbox" name="delete" value="{{stream['key']}}"></td>
+                    </tr>
+                {% endfor %}
+                </table>
+                <br>
+                <input name="delButton" type="submit" value="Delete Checked">
+            </form>
+        {% else %}
+            <h3> You have no streams yet</h3>
+        {% endif %}
+
     <br>
     <h1> Subscribed Streams:</h1>
-        <form action="/ManagementPage" method="post" id="subsStream">
-            <table id="subsStreamTable">
-                <tr>
-                    <th>Name</th>
-                    <th>Last New Picture</th>
-                    <th>Number of Pictures</th>
-                    <th>Views</th>
-                    <th>Unsubscribe</th>
-                </tr>
-                {% if subscribedStreams %}
+        {% if subscribedStreams %}
+            <form action="/ManagementPage" method="post" id="subsStream">
+                <table id="subsStreamTable">
+                    <tr>
+                        <th>Name</th>
+                        <th>Last New Picture</th>
+                        <th>Number of Pictures</th>
+                        <th>Views</th>
+                        <th>Unsubscribe</th>
+                    </tr>
                     {% for myStream in subscribedStreams %}
                         <tr>
-                            <td><a href="/ViewStream/{{stream.name}}">{{myStream.name}}</a></td>
-                            <td>{{myStream.date}}</td>
-                            <td>{{myStream.num}}</td>
-                            <td>{{myStream.numView}}</td>
-                            <td><input type="checkbox" name="unsubscribe" value={{stream.name}}></td>
+                            <td><a href="/ViewStream?stream={{myStream['key']}}">{{myStream['stream_name']}}</a></td>
+                            <td>{{myStream['stream_modified_day']}}</td>
+                             <td>{{myStream['img_count']}}</td>
+                            <td>{{myStream['numView']}}</td>
+                            <td><input type="checkbox" name="unsubscribe" value="{{myStream['key']}}"></td>
                         </tr>
                     {% endfor %}
-                    <input type="submit" value="Unsubscribe Checked Streams">
-                {% endif %}
-            </table>
-        </form>
+                </table>
+                <br>
+                <input name="unSubsButton" type="submit" value="Unsubscribe Checked Streams">
+            </form>
+        {% else %}
+            <h3> You have no streams yet</h3>
+        {% endif %}
    {% endblock body %}

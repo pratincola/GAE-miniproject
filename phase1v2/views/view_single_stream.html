@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block body %}
+    {% if error %}
+        <h1>{{error}}</h1>
+    {% endif%}
+
+    {% if images %}
+        {% for img in images %}
+            <img src="{{img}}" alt="{{img_name}}" style="width:304px;height:228px">
+        {% endfor %}
+        {% if more and next_curs %}
+            <a href="/ViewStream?stream={{myStream}}&cursor={{next_curs}}">More pictures</a>
+        {% endif %}
+    {% else %}
+        <h1> No images to display</h1>
+    {% endif %}
+
+<form method="post" id="viewForm" action="{{uploadUrl}}" name="submit" enctype="multipart/form-data">
+    <fieldset id="fieldView">
+        <legend> Add an Image: </legend>
+        <label id="commentView" for="comment">Comment:</label>
+        <input type="text" size="35" name="streamName">
+        <br>
+
+        <input type="file" id="imageFile" name="fileField">
+        <br>
+        <input type="hidden" name="streamId" value="{{stream_id}}">
+        <input type="submit" name="fileUpload" value="Upload file">
+    </fieldset>
+</form>
+<form method="post" action="/ViewStream" name="submit">
+    <br>
+    <input type="hidden" name="streamId" value="{{stream_id}}">
+    <input type="submit" name="subscribeStream" value="Subscribe">
+</form>
+
+
+{% endblock body %}

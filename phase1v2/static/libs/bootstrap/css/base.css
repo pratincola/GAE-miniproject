@@ -132,7 +132,15 @@
         color: white;
     }
 
+/* Forms */
+    #viewForm {
+        text-align: left;
+    }
+    #fieldView {
+        border: 1px solid green;
+        width: 30%
 
+    }
 
 /* Lists */
 ul {
