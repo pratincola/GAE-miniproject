@@ -76,13 +76,13 @@ class StreamObject(ModelUtils, ndb.Model):
 
 class Images(ModelUtils, ndb.Model):
     stream_id = ndb.StringProperty()
-    image_blob =  ndb.BlobKeyProperty()
+    image_blob = ndb.BlobKeyProperty()
     date = ndb.DateTimeProperty(auto_now_add=True)
 
     ''' Returns a list of images for a given stream'''
     @classmethod
     def my_imgs(cls, stream_id, num, curs):
+        log.info("querying my images...")
         return cls.query(cls.stream_id == stream_id)\
-            .order(cls.date)\
-            .fetch_page(num, start_cursor=curs)
+            .order(cls.date).fetch_page(num, start_cursor=curs)
 

@@ -1,3 +1,5 @@
+from google.appengine.api.images import get_serving_url
+
 __author__ = 'prateek'
 
 import logging
@@ -9,6 +11,7 @@ from google.appengine.api import urlfetch
 from google.appengine.datastore.datastore_query import Cursor
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
+from google.appengine.api import images
 from models import *
 
 
@@ -105,7 +108,9 @@ class CreateStreamHandler(BaseHandler):
             self.response.write('create.html')
 
 
-class ViewSingleStreamHandler(blobstore_handlers.BlobstoreUploadHandler, blobstore_handlers.BlobstoreDownloadHandler, BaseHandler):
+class ViewSingleStreamHandler(blobstore_handlers.BlobstoreUploadHandler,
+                              blobstore_handlers.BlobstoreDownloadHandler,
+                              BaseHandler):
     ''' /ViewStream?stream={{stream['key']}}&cursor= '''
     def get(self):
 
@@ -113,38 +118,48 @@ class ViewSingleStreamHandler(blobstore_handlers.BlobstoreUploadHandler, blobsto
         log.info(upload_url)
         view_stream = self.request.get('stream')
         log.info(view_stream)
-        curs = Cursor(urlsafe=self.request.get('cursor'))  # range
 
+        curs = self.request.get('cursor')
         if not curs:
-            curs = 1
+            curs = Cursor(urlsafe=self.request.get('cursor'))  # range
 
+
+        log.info(curs)
+
+        next_curs, more = "", ""
         images, next_curs, more = Images.my_imgs(view_stream, 3, curs)
-        log.info(next_curs)
+        # images = Images.my_imgs(view_stream, 3, curs)
+        log.info(next_curs.urlsafe())
         log.info(more)
         log.info(images)
 
         # streams = [d.to_dict() for d in Images.my_imgs(ndb.Key("StreamObject", view_stream), 3, curs)]
 
         # blob_info = [blobstore.BlobInfo.get(img.image_blob) for img in images]
-        blob_info = [blobstore.BlobInfo.get(img.image_blob) for img in images]
+        blob_info = [get_serving_url(img.image_blob) for img in images]
         log.info(blob_info)
         # self.send_blob(blob_info)
 
         self.render_response({'images': blob_info,
                               'more': more,
-                              'next_curs': next_curs,
+                              'next_curs': next_curs.urlsafe(),
                               'uploadUrl': upload_url,
                               'stream_id': view_stream}, "view_single_stream.html")
 
+
+
     def post(self):
+        error = ''
         stream_id = self.request.get('streamId')
-        log.info(stream_id)
         user_id = users.get_current_user()
-        log.info(user_id)
         file_upload = self.get_uploads('fileField')
-        log.info(file_upload)
         subscribe_stream = self.request.get('subscribeStream')
+
+        log.info(stream_id)
+        log.info(user_id)
+        log.info(file_upload)
         log.info(subscribe_stream)
+        log.info(":(")
 
         if file_upload:
             blob_info = file_upload[0]
@@ -153,16 +168,19 @@ class ViewSingleStreamHandler(blobstore_handlers.BlobstoreUploadHandler, blobsto
                 ''' Upload image...'''
                 s = Images(stream_id=stream_id,
                            image_blob=blob_info.key())
+                log.info(s)
                 s.put()
             except:
-                error = " Problems uplaoding the picture"
+                error += " Problems uplaoding the picture"
 
         elif subscribe_stream and user_id:
             UserObject.subscribe_stream(user_id, stream_id)
         else:
-            error = " You are not logged-in, please log-in and then subscribe"
+            error += " You are not logged-in, please log-in and then subscribe"
 
         self.redirect('/ViewStream?stream=%s&cursor=' % stream_id)
+
+
 
 
 

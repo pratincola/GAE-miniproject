@@ -6,11 +6,11 @@
     {% endif%}
 
     {% if images %}
-        {% for img in images %}
-            <img src="{{img}}" alt="{{img_name}}" style="width:304px;height:228px">
+        {% for img in images%}
+            <img src="{{img}}" alt="{{img_name}}" style="width:200px;height:150px">
         {% endfor %}
         {% if more and next_curs %}
-            <a href="/ViewStream?stream={{myStream}}&cursor={{next_curs}}">More pictures</a>
+            <a href="/ViewStream?stream={{stream_id}}&cursor={{next_curs}}">More pictures</a>
         {% endif %}
     {% else %}
         <h1> No images to display</h1>
