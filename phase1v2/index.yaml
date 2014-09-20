@@ -15,6 +15,30 @@ indexes:
   - name: stream_id
   - name: date
 
+- kind: Images
+  properties:
+  - name: stream_id
+  - name: date
+    direction: desc
+
+- kind: StreamObject
+  properties:
+  - name: cover_url
+  - name: stream_name
+
+- kind: StreamObject
+  properties:
+  - name: stream_modified_Datetime
+  - name: cover_url
+  - name: stream_name
+
+- kind: StreamObject
+  properties:
+  - name: stream_modified_Datetime
+    direction: desc
+  - name: cover_url
+  - name: stream_name
+
 - kind: StreamObject
   properties:
   - name: stream_owner

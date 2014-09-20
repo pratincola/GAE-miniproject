@@ -41,7 +41,7 @@ class ManagementHandler(BaseHandler):
         # log.info(userEntity.subscribe_list)
         # subscribed_streams = [d.to_dict() for d in StreamObject.my_subscription(user_entity.subscribe_list, 2)]
         subscribed_streams = [d.to_dict() for d in StreamObject.my_subscription(account_user, 2)]
-        self.render_response({'streams':streams, 'subscribedStreams': subscribed_streams}, 'manage.html')
+        self.render_response({'streams': streams, 'subscribedStreams': subscribed_streams}, 'manage.html')
 
 
     def post(self):
@@ -87,7 +87,7 @@ class CreateStreamHandler(BaseHandler):
         streamTags = ['#lucknow','#india','#stuff']
         coverURL = "http://facebook.com/?page=timemachine"
         user = users.get_current_user()
-
+        log.info(user.user_id())
         # add a check to see if the user is logged-in ...else force login
         if True: #TODO: Need to add a method which parses the input & does not basic validation...
             u = UserObject(id=user.user_id(), nickname=user.nickname(), email=user.email(), subscribe_list=subscribersList)
@@ -119,17 +119,17 @@ class ViewSingleStreamHandler(blobstore_handlers.BlobstoreUploadHandler,
         view_stream = self.request.get('stream')
         log.info(view_stream)
 
-        curs = self.request.get('cursor')
-        if not curs:
-            curs = Cursor(urlsafe=self.request.get('cursor'))  # range
-
-
+        curs = Cursor(urlsafe=self.request.get('cursor'))  # range
         log.info(curs)
 
-        next_curs, more = "", ""
         images, next_curs, more = Images.my_imgs(view_stream, 3, curs)
         # images = Images.my_imgs(view_stream, 3, curs)
-        log.info(next_curs.urlsafe())
+        if not next_curs:
+            next_curs_pos = ''
+        else:
+            next_curs_pos = next_curs.urlsafe()
+
+        log.info(next_curs)
         log.info(more)
         log.info(images)
 
@@ -142,16 +142,15 @@ class ViewSingleStreamHandler(blobstore_handlers.BlobstoreUploadHandler,
 
         self.render_response({'images': blob_info,
                               'more': more,
-                              'next_curs': next_curs.urlsafe(),
+                              'next_curs': next_curs_pos,
                               'uploadUrl': upload_url,
                               'stream_id': view_stream}, "view_single_stream.html")
-
 
 
     def post(self):
         error = ''
         stream_id = self.request.get('streamId')
-        user_id = users.get_current_user()
+        user_id = users.get_current_user().user_id()
         file_upload = self.get_uploads('fileField')
         subscribe_stream = self.request.get('subscribeStream')
 
@@ -181,11 +180,15 @@ class ViewSingleStreamHandler(blobstore_handlers.BlobstoreUploadHandler,
         self.redirect('/ViewStream?stream=%s&cursor=' % stream_id)
 
 
-
-
-
 class ViewAllStreamsHandler(BaseHandler):
-    pass
+    def get(self):
+
+        stream_info = [d.to_dict() for d in StreamObject.get_covers_to_display()]
+        log.info(stream_info)
+        self.render_response({'stream': stream_info}, "view_all.html")
+
+    def post(self):
+        pass
 
 
 class SearchStreamsHandler(BaseHandler):

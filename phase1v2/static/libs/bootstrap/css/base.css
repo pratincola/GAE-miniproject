@@ -131,6 +131,13 @@
         background-color: black;
         color: white;
     }
+    #imgGrid{
+        border: 0px;
+        display: inline-block;
+        vertical-align: middle;
+        float: none;
+
+    }
 
 /* Forms */
     #viewForm {
@@ -141,6 +148,13 @@
         width: 30%
 
     }
+
+/* Images */
+    FIGCAPTION {
+        font-style: italic;
+        font-variant: small-caps;
+    }
+
 
 /* Lists */
 ul {

@@ -17,9 +17,14 @@ class UserObject(ndb.Model):
     ''' Input: Takes a user_id & stream_id stream
         It will subscribe the user to the stream by adding the stream id to user's subscribe list'''
     @classmethod
-    def subscribe_stream(cls, user_id, stream_id):
-        user_entity = cls.get_or_insert(user_id)
+    def subscribe_stream(cls, u_id, stream_id):
+        log.info(u_id)
+        # k = ndb.Key(UserObject, str(u_id)).id()
+        # log.info(k)
+        user_entity = cls.get_or_insert(u_id)
+        log.info(user_entity)
         stream_list = user_entity.subscribe_list
+        log.info(stream_list)
         stream_list.append(stream_id)
         user_entity.put()
 
@@ -40,19 +45,15 @@ class UserObject(ndb.Model):
                 cls.put()
 
 
-
-
-
 class StreamObject(ModelUtils, ndb.Model):
     stream_owner = ndb.KeyProperty(kind=UserObject)
     stream_name = ndb.StringProperty(required=True)
     stream_tag = ndb.StringProperty(repeated=True)
     cover_url = ndb.StringProperty()
-    stream_count = ndb.IntegerProperty(default=0)
+    stream_view_count = ndb.IntegerProperty(default=0)
     img_count = ndb.IntegerProperty(default=0)
     stream_create_time = ndb.DateTimeProperty(auto_now_add=True)
-    stream_modified_Datetime = ndb.DateTimeProperty(auto_now_add=True) # need to update this value when the last image is inserted...
-    stream_modified_day = ndb.ComputedProperty(lambda self: self.stream_modified_Datetime.strftime('%m/%d/%Y'))
+    stream_modified_Datetime = ndb.DateTimeProperty(auto_now=True) # this should get updated when we update img_count for the stream
 
     ''' Returns a list of stream for a given user'''
     @classmethod
@@ -67,10 +68,15 @@ class StreamObject(ModelUtils, ndb.Model):
         return cls.query(cls.stream_name.IN(UserObject
                                             .get_by_id(user_id)
                                             .subscribe_list)).fetch(num)
-    ''' removes the stream with the given 'id' from the datastore'''
+    ''' Removes the stream with the given 'id' from the datastore'''
     @classmethod
     def remove_stream(cls, stream_id):
         return ndb.Key(cls, stream_id).delete()
+
+    ''' Return all streams with cover '''
+    @classmethod
+    def get_covers_to_display(cls):
+        return cls.query().order(-cls.stream_modified_Datetime).fetch(projection=[cls.stream_name, cls.cover_url])
 
 
 
@@ -84,5 +90,5 @@ class Images(ModelUtils, ndb.Model):
     def my_imgs(cls, stream_id, num, curs):
         log.info("querying my images...")
         return cls.query(cls.stream_id == stream_id)\
-            .order(cls.date).fetch_page(num, start_cursor=curs)
+            .order(-cls.date).fetch_page(num, start_cursor=curs)
 

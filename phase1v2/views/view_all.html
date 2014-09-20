@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block body %}
+    {% if error %}
+        <h1>{{error}}</h1>
+    {% endif%}
+
+    {% if stream %}
+
+
+        {% for img in stream %}
+        <div id="imgGrid">
+                    <a href="/ViewStream?stream={{img['key']}}&cursor=">
+                        <FIGURE>
+                            <object data="{{img['cover_url']}}" alt="{{img_name}}" style="width:200px;height:150px;border:0" type="image/png">
+                                <img src="http://stackoverflow.com/content/img/so/logo.png" alt="{{img_name}}" style="width:200px;height:150px;border:0">
+                            </object>
+                            <!--<img src="{{img['cover_url']}}" alt="{{img_name}}" style="width:200px;height:150px;border:0">-->
+                            <FIGCAPTION>{{img['stream_name']}}</FIGCAPTION>
+                        </FIGURE>
+                    </a>
+        </div>
+        {% endfor %}
+
+    {% else %}
+        <h1> No streams to display</h1>
+    {% endif %}
+
+{% endblock body %}

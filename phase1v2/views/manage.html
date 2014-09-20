@@ -14,8 +14,8 @@
                     </tr>
                 {% for stream in streams %}
                     <tr>
-                        <td><a href="/ViewStream?stream={{stream['key']}}">{{stream['stream_name']}}</a></td>
-                        <td>{{stream['stream_modified_day']}}</td>
+                        <td><a href="/ViewStream?stream={{stream['key']}}&cursor=">{{stream['stream_name']}}</a></td>
+                        <td>{{stream['stream_modified_Datetime'].strftime("%m/%d/%Y")}}</td>
                         <td>{{stream['img_count']}}</td>
                         <td><input type="checkbox" name="delete" value="{{stream['key']}}"></td>
                     </tr>
@@ -42,8 +42,8 @@
                     </tr>
                     {% for myStream in subscribedStreams %}
                         <tr>
-                            <td><a href="/ViewStream?stream={{myStream['key']}}">{{myStream['stream_name']}}</a></td>
-                            <td>{{myStream['stream_modified_day']}}</td>
+                            <td><a href="/ViewStream?stream={{myStream['key']}}&cursor=">{{myStream['stream_name']}}</a></td>
+                            <td>{{myStream['stream_modified_Datetime'].strftime("%m/%d/%Y")}}</td>
                              <td>{{myStream['img_count']}}</td>
                             <td>{{myStream['numView']}}</td>
                             <td><input type="checkbox" name="unsubscribe" value="{{myStream['key']}}"></td>
