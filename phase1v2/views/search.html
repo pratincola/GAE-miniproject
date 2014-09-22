@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+   {% block body %}
+
+        <form method="post" action="/SearchStreams" name="submit">
+
+            <input type="search" name="localSearch">
+            <br>
+            <input type="submit" name="hashSearch" value="Search">
+        </form>
+        {% if search %}
+            {% if searchResult %}
+                <br>
+                <h4>{{searchResult|length}} results for {{search}}</h4>
+                <h4>click on image to view stream</h4>
+
+                {% for result in searchResult %}
+                    <div id="imgGrid">
+                        <a href="/ViewStream?stream={{result['key']}}&cursor=">
+                            <FIGURE>
+                                <object data="{{result['cover_url']}}" alt="{{result['stream_name']}}" style="width:200px;height:150px;border:0" type="image/png">
+                                    <img src="http://stackoverflow.com/content/img/so/logo.png" alt="{{img_name}}" style="width:200px;height:150px;border:0">
+                                </object>
+                                <!--<img src="{{result['cover_url']}}" alt="{{result['stream_name']}}" style="width:200px;height:150px;border:0">-->
+                                <FIGCAPTION>{{result['stream_name']}}</FIGCAPTION>
+                            </FIGURE>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h1> No search results to display</h1>
+            {% endif %}
+        {% endif %}
+
+   {% endblock body %}

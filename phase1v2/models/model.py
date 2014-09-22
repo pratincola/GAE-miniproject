@@ -3,6 +3,7 @@ import sys
 
 from google.appengine.ext import ndb
 from models.modelUtil import ModelUtils
+from datetime import datetime
 import logging
 
 
@@ -13,6 +14,7 @@ class UserObject(ndb.Model):
     nickname = ndb.StringProperty()
     email = ndb.StringProperty()
     subscribe_list = ndb.StringProperty(repeated=True)
+    email_rate = ndb.IntegerProperty(default=0)
 
     ''' Input: Takes a user_id & stream_id stream
         It will subscribe the user to the stream by adding the stream id to user's subscribe list'''
@@ -28,6 +30,17 @@ class UserObject(ndb.Model):
         stream_list.append(stream_id)
         user_entity.put()
 
+    @classmethod
+    def update_rate(cls, u_id, rate):
+        log.info(u_id)
+        user_entity = cls.get_by_id(u_id)
+        user_entity.email_rate = int(rate)
+        log.info(user_entity)
+        user_entity.put()
+
+    @classmethod
+    def get_users_for_rate(cls, rate):
+        return cls.query(cls.email_rate == rate).fetch()
 
 
     @classmethod # query doesnt work...
@@ -50,8 +63,10 @@ class StreamObject(ModelUtils, ndb.Model):
     stream_name = ndb.StringProperty(required=True)
     stream_tag = ndb.StringProperty(repeated=True)
     cover_url = ndb.StringProperty()
-    stream_view_count = ndb.IntegerProperty(default=0)
+    lifetime_stream_view_count = ndb.IntegerProperty(default=0)
     img_count = ndb.IntegerProperty(default=0)
+    trending_stream_count = ndb.IntegerProperty(default=0)
+    click_times = ndb.DateTimeProperty(repeated=True)
     stream_create_time = ndb.DateTimeProperty(auto_now_add=True)
     stream_modified_Datetime = ndb.DateTimeProperty(auto_now=True) # this should get updated when we update img_count for the stream
 
@@ -71,14 +86,60 @@ class StreamObject(ModelUtils, ndb.Model):
     ''' Removes the stream with the given 'id' from the datastore'''
     @classmethod
     def remove_stream(cls, stream_id):
-        return ndb.Key(cls, stream_id).delete()
+        t = cls.get_by_id(stream_id)
+        c = ndb.Key(cls, stream_id)
+        log.info(t)
+        log.info(c)
+        # p = Images.query(Images.stream_id == stream_id).fetch()
+        # log.info(p)
+        # if p:
+        #     for i in p:
+        #         i.key.delete()
+        c.delete()
 
     ''' Return all streams with cover '''
     @classmethod
     def get_covers_to_display(cls):
         return cls.query().order(-cls.stream_modified_Datetime).fetch(projection=[cls.stream_name, cls.cover_url])
 
+    ''' searches the hash-tags to find the result'''
+    @classmethod
+    def search_hash(cls, hash, num_results):
+        return cls.query(cls.stream_tag == hash).fetch(num_results, projection=[cls.stream_name, cls.cover_url])
 
+    @classmethod
+    def update_click_times(cls, stream_id):
+        log.info(stream_id)
+        stream_entity = cls.get_by_id(int(stream_id))
+        log.info(stream_entity)
+        click_times = stream_entity.click_times
+        log.info(click_times)
+        dt = datetime.now()
+        log.info(dt)
+        click_times.append(dt)
+        log.info(stream_entity)
+        stream_entity.put()
+
+    @classmethod
+    def update_image_count(cls, stream_id):
+        stream_entity = cls.get_by_id(int(stream_id))
+        stream_entity.img_count += 1
+        log.info(stream_entity)
+        stream_entity.put()
+
+    @classmethod
+    def trending_streams(cls, num_results):
+        return cls.query()\
+            .order(cls.trending_stream_count)\
+            .fetch(num_results, projection=[cls.stream_name, cls.cover_url, cls.trending_stream_count])
+
+    @classmethod
+    def get_click_times(cls):
+        return cls.query().fetch()
+
+    @classmethod
+    def remove_old_clicks(cls):
+        cls.query()
 
 class Images(ModelUtils, ndb.Model):
     stream_id = ndb.StringProperty()

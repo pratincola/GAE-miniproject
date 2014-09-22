@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta content="text/html">
     <link type="text/css" rel="stylesheet" href="../static/libs/bootstrap/css/base.css">
-    <title>Connex.us by pb</title>
+    <title id="headLabel">Connex.us by pb</title>
 
 </head>
 <body id="index" class="home">
@@ -23,6 +23,9 @@
     </ul></nav>
 
 </header><!-- /#banner -->
+    {% if error %}
+        <h1>{{error}}</h1>
+    {% endif%}
 {% block body %}
 
 {% endblock body %}

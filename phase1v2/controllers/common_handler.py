@@ -84,8 +84,8 @@ class CreateStreamHandler(BaseHandler):
         streamName = "pratincola"
         subscribersList = ['5629499534213120','pratincola','patrick@gmail.com','as@as.com']
         optionalMessage = "poop"
-        streamTags = ['#lucknow','#india','#stuff']
-        coverURL = "http://facebook.com/?page=timemachine"
+        streamTags = ['#lucknow','#india','#stuff']  # TODO: remove hashes when adding hashtags...
+        coverURL = "http://www.w3schools.com/images/w3schools_green.jpg"
         user = users.get_current_user()
         log.info(user.user_id())
         # add a check to see if the user is logged-in ...else force login
@@ -111,13 +111,15 @@ class CreateStreamHandler(BaseHandler):
 class ViewSingleStreamHandler(blobstore_handlers.BlobstoreUploadHandler,
                               blobstore_handlers.BlobstoreDownloadHandler,
                               BaseHandler):
-    ''' /ViewStream?stream={{stream['key']}}&cursor= '''
+    ''' /ViewStream?stream={{stream['key']}}&cursor='''
     def get(self):
 
         upload_url = blobstore.create_upload_url('/ViewStream')
         log.info(upload_url)
         view_stream = self.request.get('stream')
         log.info(view_stream)
+        ''' Add clicks... '''
+        StreamObject.update_click_times(view_stream)
 
         curs = Cursor(urlsafe=self.request.get('cursor'))  # range
         log.info(curs)
@@ -169,6 +171,7 @@ class ViewSingleStreamHandler(blobstore_handlers.BlobstoreUploadHandler,
                            image_blob=blob_info.key())
                 log.info(s)
                 s.put()
+                StreamObject.update_image_count(stream_id)
             except:
                 error += " Problems uplaoding the picture"
 
@@ -187,16 +190,47 @@ class ViewAllStreamsHandler(BaseHandler):
         log.info(stream_info)
         self.render_response({'stream': stream_info}, "view_all.html")
 
+    ''' No implementation required as there is no action on this page. '''
     def post(self):
         pass
 
 
 class SearchStreamsHandler(BaseHandler):
-    pass
+    def get(self):
+        self.render_response({}, "search.html")
+
+    def post(self):
+        result = ''
+        searh_term = self.request.get('localSearch')
+        log.info(searh_term)
+        if searh_term:
+            result = [d.to_dict() for d in StreamObject.search_hash(searh_term, 5)]
+            log.info(result)
+
+        self.render_response({'search': searh_term,
+                              'searchResult': result}, "search.html")
 
 
 class TrendingStreamsHandler(BaseHandler):
-    pass
+    def get(self):
+        error = self.request.get('error')
+        result = [d.to_dict() for d in StreamObject.trending_streams(3)]
+        self.render_response({'searchResult': result,
+                              'error': error}, "trending.html")
+
+    def post(self):
+        error = ''
+        update_rate = self.request.get('rate')
+        log.info(update_rate)
+        user = users.get_current_user()
+        if user:
+            u_id = user.user_id()
+            UserObject.update_rate(u_id, update_rate)
+            error += "Preference updated"
+        else:
+            error += "Please log-in before updating preference"
+
+        self.redirect('/TrendingStreams?error=%s' % error)
 
 
 class SocialMedia(BaseHandler):

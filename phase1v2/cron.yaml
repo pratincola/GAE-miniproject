@@ -1,0 +1,13 @@
+cron:
+- description: 5 min job
+  url: /tasks/trending
+  schedule: every 2 minutes
+  timezone: America/Chicago
+- description: 1 hour job
+  url: /tasks/onehour
+  schedule: every 60 minutes
+  timezone: America/Chicago
+- description: 1 day job
+  url: /tasks/oneday
+  schedule: every 24 hours
+  timezone: America/Chicago

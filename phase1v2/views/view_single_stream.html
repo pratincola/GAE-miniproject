@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 
 {% block body %}
-    {% if error %}
-        <h1>{{error}}</h1>
-    {% endif%}
 
     {% if images %}
         {% for img in images%}

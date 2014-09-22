@@ -23,6 +23,17 @@ indexes:
 
 - kind: StreamObject
   properties:
+  - name: click_times
+  - name: stream_name
+
+- kind: StreamObject
+  properties:
+  - name: click_times
+  - name: stream_name
+  - name: trending_stream_count
+
+- kind: StreamObject
+  properties:
   - name: cover_url
   - name: stream_name
 
@@ -41,8 +52,25 @@ indexes:
 
 - kind: StreamObject
   properties:
+  - name: stream_name
+  - name: cover_url
+
+- kind: StreamObject
+  properties:
   - name: stream_owner
   - name: stream_modified_Datetime
+
+- kind: StreamObject
+  properties:
+  - name: stream_tag
+  - name: cover_url
+  - name: stream_name
+
+- kind: StreamObject
+  properties:
+  - name: trending_stream_count
+  - name: cover_url
+  - name: stream_name
 
 - kind: UserObject
   properties:

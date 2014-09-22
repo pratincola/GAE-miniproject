@@ -41,6 +41,7 @@ class BaseHandler(webapp2.RedirectHandler):
         template_values['url'] = url
         template_values['url_linktext'] = url_linktext
 
+        log.info(template_values)
         use_template = JINJA_ENVIRONMENT.get_template(template)
         self.response.write(use_template.render(template_values))
 

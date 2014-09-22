@@ -1,16 +1,18 @@
 
 /***** Global *****/
+
 /* Body */
 	body {
 		background: #F5F4EF url('../img/bg.jpg') no-repeat center center fixed;
 		background-size: cover;
-		color: #000305;
+		color: #C74350;
 		font-size: 87.5%; /* Base font size: 14px */
 		font-family: 'Trebuchet MS', Trebuchet, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 		line-height: 1.429;
 		margin: 0;
 		padding: 0;
 		text-align: left;
+
 	}
 
 /* Anchors */
@@ -155,9 +157,9 @@
         font-variant: small-caps;
     }
 
-
 /* Lists */
-ul {
-	list-style: outside disc;
-	margin: 1em 0 1.5em 1.5em;
-}
+.checkbox-grid li, legend {
+        display: block;
+        color: #000000;
+    }
+
