@@ -1,0 +1,25 @@
+From 643879011ffeb4103e823e4d75980cc06d8da63e Mon Sep 17 00:00:00 2001
+From: pratincola <pratik.patrick@gmail.com>
+Date: Sat, 27 Sep 2014 20:43:26 -0500
+Subject: [PATCH] random3
+
+---
+ Lab2/Lab1_git/HelloWorld/src/HelloWorld.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Lab2/Lab1_git/HelloWorld/src/HelloWorld.java b/Lab2/Lab1_git/HelloWorld/src/HelloWorld.java
+index a5c3bcb..5133e14 100644
+--- a/Lab2/Lab1_git/HelloWorld/src/HelloWorld.java
++++ b/Lab2/Lab1_git/HelloWorld/src/HelloWorld.java
+@@ -1,7 +1,7 @@
+ 
+ public class HelloWorld {
+ 	public static void main( String [] args){
+-		System.out.println("Hello World!");
++		System.out.println("Hallo Walt!");
+ 	}
+ 
+ }
+-- 
+1.9.3 (Apple Git-50)
+
